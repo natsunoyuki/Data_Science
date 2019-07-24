@@ -12,6 +12,10 @@ from sklearn.preprocessing import StandardScaler
 import warnings
 import time
 
+#This is my submission script for the Titanic: Machine Learning from Disaster data set at Kaggle.
+#My profile: https://www.kaggle.com/yukinonatsu
+#I managed to get a maximum score of 0.80861 with this script. The scoring appears to be random due to
+#certain random processes in the script. The average score I tend to get is about 0.79425.
 
 warnings.filterwarnings('ignore')
 
