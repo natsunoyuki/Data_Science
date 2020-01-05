@@ -6,23 +6,20 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler
 import warnings
 import time
 
-#This is my submission script for the Titanic: Machine Learning from Disaster data set at Kaggle.
-#My profile: https://www.kaggle.com/yukinonatsu
-#I managed to get a maximum score of 0.80861 with this script. The scoring appears to be random due to
-#certain random processes in the script. The average score I tend to get is about 0.79425.
 
 warnings.filterwarnings('ignore')
 
 STARTTIME = time.time()
 
 #data directory. Change as necessary!
-directory = "/Users/yumi/Downloads/titanic/"
+directory = "/Users/yumi/Documents/titanic/"
 
 #function list:
 def getHonorific(DF,i):
@@ -95,7 +92,7 @@ def binColumn(TRAIN,TEST,COL,N):
         TRAIN[new_col]=pd.cut(TRAIN[COL], bins=bins, labels=labels,right=False)
         TEST[new_col]=pd.cut(TEST[COL], bins=bins, labels=labels,right=False)   
     elif nanflag>0:
-        print "Warning! NaN detected!"   
+        print("Warning! NaN detected!") 
         new_col_train = pd.cut(TRAIN[COL][pd.notnull(TRAIN[COL])],bins=bins,labels=labels,right=False)
         new_col_test = pd.cut(TEST[COL][pd.notnull(TEST[COL])],bins=bins,labels=labels,right=False)
         TRAIN[new_col]=nan
@@ -132,9 +129,9 @@ TRAIN,TEST = loadData(directory)
 
 #first we simplify the entire honorifics set to a more simplified set
 honorifics = extractHonorifics(TRAIN,TEST,NOB=1)
-print "Reduced honorifics set:"
+print("Reduced honorifics set:")
 for i in unique(honorifics):
-    print "{}:{}".format(i,honorifics.count(i))
+    print("{}:{}".format(i,honorifics.count(i)))
 TRAIN["Honorific"] = pd.DataFrame(honorifics[:len(TRAIN)])
 TEST["Honorific"] = pd.DataFrame(honorifics[len(TRAIN):])
 
@@ -161,9 +158,9 @@ for i in range(len(CABINS)):
         #replace NaN with N
         CABINS[i] = "N"
 
-print "Unique cabin letters:"
+print("Unique cabin letters:")
 for i in unique(CABINS):
-    print "{}:{}".format(i,CABINS.count(i))
+    print("{}:{}".format(i,CABINS.count(i)))
 
 TRAIN["Cabin_letter"] = pd.DataFrame(CABINS[:len(TRAIN.Cabin)])
 TEST["Cabin_letter"] = pd.DataFrame(CABINS[len(TRAIN.Cabin):])
@@ -185,14 +182,14 @@ TEST["Sex"]=TEST["Sex"].replace({"male":1,"female":0})
 TRAIN["Honorific"]=TRAIN["Honorific"].replace({"Master":0,"Mr":1,"Ms":2,"Mrs":3,"Nobility":4})
 TEST["Honorific"]=TEST["Honorific"].replace({"Master":0,"Mr":1,"Ms":2,"Mrs":3,"Nobility":4})
 
-print "Number of null values per column in TRAIN:"
+print("Number of null values per column in TRAIN:")
 for i in TRAIN.columns:
     if checkForNan(TRAIN,i) > 0:
-        print "{}:{}".format(i,checkForNan(TRAIN,i))
-print "Number of null values per column in TEST:"
+        print("{}:{}".format(i,checkForNan(TRAIN,i)))
+print("Number of null values per column in TEST:")
 for i in TEST.columns:
     if checkForNan(TEST,i) > 0:
-        print "{}:{}".format(i,checkForNan(TEST,i))        
+        print("{}:{}".format(i,checkForNan(TEST,i)))
 
 #fill NaN in Cabin with N
 TRAIN['Cabin']= TRAIN['Cabin'].fillna("N")
@@ -216,9 +213,9 @@ TRAIN,TEST=binColumnCustom(TRAIN,TEST,"Fare",fareBins)
 
 #bin fares using a uniform cut
 #TRAIN,TEST,fareBins,fareLabels = binColumn(TRAIN,TEST,"Fare",20)
-print "Binned fare value_counts():"
-print TRAIN.Binned_fare.value_counts()
-print TEST.Binned_fare.value_counts()
+print("Binned fare value_counts():")
+print(TRAIN.Binned_fare.value_counts())
+print(TEST.Binned_fare.value_counts())
 
 #bin ages using a specific cut
 #ageBins = array([0,16,32,48,64,99])
@@ -252,8 +249,8 @@ yAGE_train = yAGE.iloc[list(pd.notnull(XAGE["Binned_age"]))]
 yAGE_test = yAGE.iloc[list(pd.isnull(XAGE["Binned_age"]))]
 XAGE_train.drop("Binned_age",axis=1,inplace=True)
 XAGE_test.drop("Binned_age",axis=1,inplace=True)
-print "shape(XAGE): {}, shape(XAGE_train): {}, shape(XAGE_test): {}".format(shape(XAGE),shape(XAGE_train),shape(XAGE_test))
-print "len(yAGE): {}, len(yAGE_train): {}, len(yAGE_test): {}".format(len(yAGE),len(yAGE_train),len(yAGE_test))
+print("shape(XAGE): {}, shape(XAGE_train): {}, shape(XAGE_test): {}".format(shape(XAGE),shape(XAGE_train),shape(XAGE_test)))
+print("len(yAGE): {}, len(yAGE_train): {}, len(yAGE_test): {}".format(len(yAGE),len(yAGE_train),len(yAGE_test)))
 
 #attempt to predict the missing age values using a RandomForestClassifier with
 #gridsearch
@@ -262,13 +259,13 @@ X1,X2,y1,y2 = train_test_split(XAGE_train,yAGE_train)
 param_grid={"n_estimators":[10,50,100,150,200]}
 grid_search = GridSearchCV(RandomForestClassifier(),param_grid,cv=5)
 grid_search.fit(X1,y1)
-print "Age fitting complete... best params: {}".format(grid_search.best_params_)
-print "Age train score: {}".format(grid_search.score(X1,y1)) 
-print "Age test score: {}".format(grid_search.score(X2,y2)) 
+print("Age fitting complete... best params: {}".format(grid_search.best_params_))
+print("Age train score: {:.3f}".format(grid_search.score(X1,y1))) 
+print("Age test score: {:.3f}".format(grid_search.score(X2,y2)))
 #rebuild the model using the best params and all data before prediction:
 grid_search=RandomForestClassifier(n_estimators=grid_search.best_params_["n_estimators"])
 grid_search.fit(XAGE_train,yAGE_train)
-print "Age train score: {}".format(grid_search.score(XAGE_train,yAGE_train)) 
+print("Age train score: {:.3f}".format(grid_search.score(XAGE_train,yAGE_train)))
 yAGE_pred = grid_search.predict(XAGE_test) #predict the missing ages
 
 for i in range(len(yAGE_pred)):
@@ -285,25 +282,25 @@ for i in range(len(nanindex1)):
     index_to_insert = nanindex1[i]
     TEST.Binned_age.iloc[index_to_insert] = yAGE_test.iloc[i+len(nanindex)]  
 
-print "Binned age value_counts():"
-print TRAIN.Binned_age.value_counts()
-print TEST.Binned_age.value_counts()
+print("Binned age value_counts():")
+print(TRAIN.Binned_age.value_counts())
+print(TEST.Binned_age.value_counts())
 
 #final null check
-print "Number of null values per column in TRAIN:"
+print("Number of null values per column in TRAIN:")
 for i in TRAIN.columns:
     if i=="Age":
-        print "Ignoring Age column in lieu of Binned_age..."
+        print("Ignoring Age column in lieu of Binned_age...")
     else:
         if checkForNan(TRAIN,i) > 0:
-            print "{}:{}".format(i,checkForNan(TRAIN,i))
-print "Number of null values per column in TEST:"
+            print("{}:{}".format(i,checkForNan(TRAIN,i)))
+print("Number of null values per column in TEST:")
 for i in TEST.columns:
     if i=="Age":
-        print "Ignoring Age column in lieu of Binned_age..."
+        print("Ignoring Age column in lieu of Binned_age...")
     else:
         if checkForNan(TEST,i) > 0:
-            print "{}:{}".format(i,checkForNan(TEST,i))
+            print("{}:{}".format(i,checkForNan(TEST,i)))
 
 #end feature engineering
 
@@ -320,30 +317,37 @@ ss.fit(X_train)
 X_train = ss.transform(X_train)
 X_test = ss.transform(X_test)
 
+#grid search using LogisticRegression
+#param_grid={"C":[0.01,0.1,1,10,100]}
+#model_grid = GridSearchCV(LogisticRegression(),param_grid,cv=5)
+#model_grid.fit(X_train,y_train)
+#print "Fitting complete... best params: {}".format(model_grid.best_params_)
+#print "Train score: {}".format(model_grid.score(X_train,y_train)) 
+
 #grid search using RandomForestClassifier
-#param_grid={"n_estimators":[10,50,100,150,200]}
-#rfc_grid = GridSearchCV(RandomForestClassifier(),param_grid,cv=5)
-#rfc_grid.fit(X_train,y_train)
-#print "Fitting complete... best params: {}".format(rfc_grid.best_params_)
-#print "Train score: {}".format(rfc_grid.score(X_train,y_train)) 
+param_grid={"n_estimators":[10,50,100,150,200]}
+model_grid = GridSearchCV(RandomForestClassifier(),param_grid,cv=5)
+model_grid.fit(X_train,y_train)
+print("Fitting complete... best params: {}".format(model_grid.best_params_))
+print("Train score: {}".format(model_grid.score(X_train,y_train)))
 
 #grid search using SVC
 #param_grid={"C":[10**i for i in range(-5,5+1,1)],"gamma":[10**i for i in range(-5,5+1,1)]}
-#svc_grid = GridSearchCV(SVC(kernel="rbf"),param_grid,cv=5)
-#svc_grid.fit(X_train,y_train)
-#print "Fitting complete... best params: {}".format(svc_grid.best_params_)
-#print "Train score: {}".format(svc_grid.score(X_train,y_train)) 
+#model_grid = GridSearchCV(SVC(kernel="rbf"),param_grid,cv=5)
+#model_grid.fit(X_train,y_train)
+#print "Fitting complete... best params: {}".format(model_grid.best_params_)
+#print "Train score: {}".format(model_grid.score(X_train,y_train)) 
 
 #grid search using MLPClassifier
-param_grid={"alpha":[10**i for i in range(-5,5+1,1)]}
-mlpc_grid=GridSearchCV(MLPClassifier(),param_grid,cv=5)
-mlpc_grid.fit(X_train,y_train)
-print "Fitting complete... best params: {}".format(mlpc_grid.best_params_)
-print "Train score: {}".format(mlpc_grid.score(X_train,y_train)) 
+#param_grid={"alpha":[10**i for i in range(-5,5+1,1)]}
+#model_grid=GridSearchCV(MLPClassifier(),param_grid,cv=5)
+#model_grid.fit(X_train,y_train)
+#print "Fitting complete... best params: {}".format(model_grid.best_params_)
+#print "Train score: {}".format(model_grid.score(X_train,y_train)) 
 
 #make a prediction:
-y_pred = mlpc_grid.predict(X_test)
+y_pred = model_grid.predict(X_test)
 y_pred = pd.DataFrame({"PassengerId":TEST.PassengerId,"Survived":y_pred})
-y_pred.to_csv("survived.csv",index=False)
+#y_pred.to_csv("survived.csv",index=False)
 
-print "Elapsed time: {:.2f}s".format(time.time()-STARTTIME)
+print("Elapsed time: {:.2f}s".format(time.time()-STARTTIME))
