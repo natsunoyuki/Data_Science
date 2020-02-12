@@ -1,7 +1,6 @@
 from scipy import *
 import matplotlib.pyplot as plt
 from scipy import linalg
-from sklearn.linear_model import LinearRegression
 from scipy.optimize import curve_fit
 
 def linearInversion(x,y):
