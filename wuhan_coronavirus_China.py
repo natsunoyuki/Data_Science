@@ -23,22 +23,6 @@ Population = array([45,62,121,198,291,440,571,830,1287,1975,2744,4515,5974,
 logPopulation = log(Population)
 days = arange(1,len(Population)+1,1)
 
-#the power law trend seems to hold true until day 12 (index 11)...
-#max_lim = 11
-#mpop = linearInversion(days[:max_lim],logPopulation[:max_lim])
-#print("Power law coefficients: {}".format(exp(mpop)))
-
-#from day 18 - 24 (index 17) onwards the increase appears to follow a linear trend...
-#min_lim2 = 17
-#max_lim2 = 24
-#mpop2 = linearInversion(days[min_lim2:max_lim2],Population[min_lim2:max_lim2])
-#model = LinearRegression()
-#model.fit(days[min_lim:].reshape(-1,1),Population[min_lim:])
-#mpop2=[0,0]
-#mpop2[0] = model.coef_[0]
-#mpop2[1] = model.intercept_
-#print("Linear coefficients: {}".format(mpop2))
-
 #curve fitting to logistic function
 def func(x, L, k, x0):
     return L / (1 + exp(-k*(x-x0)))
@@ -48,19 +32,7 @@ print("L: {}, k: {:.3f}, x0: {}".format(int(popt[0]),popt[1],int(popt[2])))
 
 #Make future predictions
 x = arange(1,len(Population)+30,1)
-#ypop = x * mpop[0] + mpop[1]
-#ypop2 = x * mpop2[0] + mpop2[1]
 logistic_prediction = func(x,*popt)
-
-#plt.semilogy(days,Population,"ro")
-#plt.semilogy(x[:max_lim+10],exp(ypop[:max_lim+10]),"k")
-#plt.semilogy(x[min_lim2:max_lim2+10],ypop2[min_lim2:max_lim2+10],"b")
-#plt.semilogy(x,logistic_prediction,"c")
-#plt.xlabel("Days")
-#plt.ylabel("log_Population")
-#plt.grid("on")
-#plt.legend(["Observations","Power Law","Linear","Logistic"])
-#plt.show()
 
 plt.plot(days,Population,"ro")
 plt.plot(x,logistic_prediction,"k")
