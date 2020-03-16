@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from scipy import linalg
 from scipy.optimize import curve_fit
 
+#linear inversion
 def linearInversion(x,y):
     N = len(x)
     G = ones([N,2])
@@ -11,6 +12,10 @@ def linearInversion(x,y):
     m = dot(Ginv,y)
     return m
 
+#curve fitting to logistic function
+def func(x, L, k, x0):
+    return L / (1 + exp(-k*(x-x0)))
+
 #Population infected with Wuhan virus from 2020 Jan 16. Data from:
 #https://en.wikipedia.org/wiki/2019–20_Wuhan_coronavirus_outbreak
 Population = array([45,62,121,198,291,440,571,830,1287,1975,2744,4515,5974,
@@ -18,19 +23,15 @@ Population = array([45,62,121,198,291,440,571,830,1287,1975,2744,4515,5974,
                     37198,40171,42638,44653,58761,63851,66492,68500,70548,
                     72436,74185,75003,75891,76288,76936,77150,77658,78064,
                     78497,80026,80151,80270,80409,80552,80651,80695,80735,
-                    80754,80778,80793,80813])
+                    80754,80778,80793,80813,80824,80844,80860])
 
 logPopulation = log(Population)
 days = arange(1,len(Population)+1,1)
 
-#curve fitting to logistic function
-def func(x, L, k, x0):
-    return L / (1 + exp(-k*(x-x0)))
-
 popt, pcov = curve_fit(func, days, Population)
 print("L: {}, k: {:.3f}, x0: {}".format(int(popt[0]),popt[1],int(popt[2])))
 
-#Make future predictions
+#Make future predictions 1 month ahead
 x = arange(1,len(Population)+30,1)
 logistic_prediction = func(x,*popt)
 
@@ -61,3 +62,17 @@ L = 0.0002 * 327.2E6 = 65000 people approx.
 Case 3: Japan with population of 126.8E6 people:
 L = 0.0002 * 126.8E6 = 25000 people approx.
 """
+
+#prediction for California
+pred_Cal = func(x, L = 8000, k = popt[1], x0 = int(popt[2]))
+
+D = 335 
+i = argmin(abs(pred_Cal - D))
+print("Day: {}, cases: {}".format(i, D))
+
+plt.plot(x,pred_Cal)
+plt.xlabel("Days")
+plt.ylabel("Population")
+plt.grid("on")
+plt.legend(["Observations","Logistic Function"])
+plt.show()
