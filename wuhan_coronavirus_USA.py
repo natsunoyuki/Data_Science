@@ -16,8 +16,8 @@ def linearInversion(x,y):
 def func(x, L, k, x0):
     return L / (1 + exp(-k*(x-x0)))
 
-#Italian population infected with Wuhan virus from 2020 Jan 31. Data from:
-#https://en.wikipedia.org/wiki/2020_coronavirus_pandemic_in_Italy
+#USA population infected with Wuhan virus from 2020 Jan 21. Data from:
+#https://en.wikipedia.org/wiki/2020_coronavirus_pandemic_in_the_United_States
 Population = array([1,1,1,2,3,5,5,5,5,6,7,8,11,11,11,12,12,12,12,12,12,12,12,
                     12,12,12,12,12,12,12,14,14,14,14,14,14,15,15,19,24,42,57,
                     85,111,175,252,353,497,645,936,1205,1598,2163,2825,3496,
