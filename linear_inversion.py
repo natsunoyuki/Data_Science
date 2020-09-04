@@ -28,7 +28,7 @@ def min_length(d, G):
     m = np.dot(m, d)
     return m
 
-def SVD(d, G):
+def SVD(d, G, l = 0.01):
     """
     Linear inversion using SVD to get the Penrose inverse
     For a linear system given by: |d> = G |m>
@@ -39,7 +39,7 @@ def SVD(d, G):
     We can then obtain the Penrose inverse using the limited V, S and U.
     """
     u, s, vh = np.linalg.svd(G)
-    cond = s > (np.max(s) * 0.01) 
+    cond = s > (np.max(s) * l) 
     s = s[:len(cond)]
     u = u[:,:len(cond)]
     vh = vh[:len(cond),:]
