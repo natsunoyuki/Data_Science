@@ -40,9 +40,9 @@ def SVD(d, G, l = 0.01):
     """
     u, s, vh = np.linalg.svd(G)
     cond = s > (np.max(s) * l) 
-    s = s[:len(cond)]
-    u = u[:,:len(cond)]
-    vh = vh[:len(cond),:]
+    s = s[:sum(cond)]
+    u = u[:,:sum(cond)]
+    vh = vh[:sum(cond),:]
     Gg = np.dot(vh.T, np.linalg.inv(np.diag(s)))
     Gg = np.dot(Gg, u.T)
     m = np.dot(Gg, d)
