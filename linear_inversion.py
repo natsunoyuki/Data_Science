@@ -1,5 +1,5 @@
-# Linear inversion (linear regression) using linear algebra
-
+# Functions for linear inversion (linear regression).
+from scipy.optimize import linprog
 import numpy as np
 
 def least_squares(d, G):
@@ -47,3 +47,47 @@ def SVD(d, G, l = 0.01):
     Gg = np.dot(Gg, u.T)
     m = np.dot(Gg, d)
     return m
+
+def l1_norm_inversion(d, G, sd = 1.0):
+    """
+    Linear inversion using L1 norm error instead of mean squared error for
+    over determined problems.
+    The inversion problem is transformed into a linear programming problem
+    and solved using the linprog() function from scipy.optimize
+    See Geophysical Data Analysis: Discrete Inverse Theory MATLAB Edition
+    Third Edition by William Menke pages 153-157 for more details.
+    """
+    N, M = np.shape(G)
+    L = 2 * M + 3 * N
+    f = np.zeros(L)
+    f[2*M:2*M+N] = 1 / sd
+
+    Aeq = np.zeros([2*N, L])
+    beq = np.zeros(2*N)
+    
+    Aeq[:N, :M] = G
+    Aeq[:N, M:2*M] = -G
+    Aeq[:N, 2*M:2*M+N] = -np.eye(N)
+    Aeq[:N, 2*M+N:2*M+2*N] = np.eye(N)
+    beq[:N] = d
+    
+    Aeq[N:2*N, :M] = G
+    Aeq[N:2*N, M:2*M] = -G
+    Aeq[N:2*N, 2*M:2*M+N] = np.eye(N)
+    Aeq[N:2*N, 2*M+2*N:2*M+3*N] = -np.eye(N)
+    beq[N:2*N] = d
+    
+    A = np.zeros([L+2*M, L])
+    b = np.zeros(L+2*M)
+    A[:L, :] = -np.eye(L)
+    b[:L] = np.zeros(L)
+    
+    A[L:L+2*M] = np.eye(2*M, L)
+    mls = least_squares(d, G)
+    mupperbound = 10 * np.max(np.abs(mls))
+    b[L:L+2*M] = mupperbound
+    
+    res = linprog(f, A, b, Aeq, beq)
+    
+    mest_l1 = res['x'][:M] - res['x'][M:2*M]
+    return mest_l1
