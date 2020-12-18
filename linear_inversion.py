@@ -10,6 +10,18 @@ def least_squares(d, G):
     |m_est> = Gg |d>
     Minimize the error E = <e|e> where |e> = |d> - G|m>
     Gg = [G.T G]**-1 G.T
+    
+    Inputs
+    ------
+    d: np.array
+        np.array of observations
+    G: np.array
+        np.array of the inversion kernel
+        
+    Returns
+    -------
+    m: np.array
+        np.array of the inverted model parameters
     """    
     m = np.dot(np.linalg.inv(np.dot(G.T, G)), G.T)
     m = np.dot(m, d)
@@ -23,6 +35,18 @@ def min_length(d, G):
     |m_est> = Gg |d>
     Minimize the function: E = <m|m> + <l|e>
     Gg = G.T [G G.T]**-1 
+    
+    Inputs
+    ------
+    d: np.array
+        np.array of observations
+    G: np.array
+        np.array of the inversion kernel
+        
+    Returns
+    -------
+    m: np.array
+        np.array of the inverted model parameters
     """        
     m = np.dot(G.T, np.linalg.inv(np.dot(G, G.T)))
     m = np.dot(m, d)
@@ -37,6 +61,21 @@ def SVD(d, G, l = 0.01):
     Take only the largest eigenvalues of S, and limit the number of columns
     of U and rows of V 
     We can then obtain the Penrose inverse using the limited V, S and U.
+    
+    Inputs
+    ------
+    d: np.array
+        np.array of observations
+    G: np.array
+        np.array of the inversion kernel
+    l: float
+        upper limit of the tolerance level of the SVD eigenvalues to treat as 0
+        any eigenvalues smaller than l will be treated as 0
+        
+    Returns
+    -------
+    m: np.array
+        np.array of the inverted model parameters
     """
     u, s, vh = np.linalg.svd(G)
     cond = s > (np.max(s) * l) 
@@ -56,6 +95,20 @@ def l1_norm_inversion(d, G, sd = 1.0):
     and solved using the linprog() function from scipy.optimize
     See Geophysical Data Analysis: Discrete Inverse Theory MATLAB Edition
     Third Edition by William Menke pages 153-157 for more details.
+    
+    Inputs
+    ------
+    d: np.array
+        np.array of observations
+    G: np.array
+        np.array of the inversion kernel
+    sd: float
+        standard deviation. Set to 1 by default
+        
+    Returns
+    -------
+    m: np.array
+        np.array of the inverted model parameters
     """
     N, M = np.shape(G)
     L = 2 * M + 3 * N
