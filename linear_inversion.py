@@ -103,7 +103,7 @@ def l1_norm_inversion(d, G, sd = 1.0):
     G: np.array
         np.array of the inversion kernel
     sd: float
-        standard deviation. Set to 1 by default
+        variance of the measurement d. Set to 1 by default
         
     Returns
     -------
