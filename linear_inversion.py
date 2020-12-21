@@ -2,6 +2,16 @@
 from scipy.optimize import linprog
 import numpy as np
 
+# List of linear inversion solvers in this script:
+# 1. Linear least squares inversion/regression for the over determined problem
+# m = least_squares(d, G)
+# 2. Linear inversion/regression for the under determined problem
+# m = min_length(d, G)
+# 3. Generalized SVD linear inversion/regression
+# m = SVD(d, G, l = 0.01)
+# 4. L1 norm linear inversion/regression for the over determined problem
+# m = l1_norm_inversion(d, G, sd = 1.0)
+
 def least_squares(d, G):
     """
     Linear inversion using least squares to get the Penrose inverse
@@ -107,7 +117,7 @@ def l1_norm_inversion(d, G, sd = 1.0):
         
     Returns
     -------
-    m: np.array
+    mest_l1: np.array
         np.array of the inverted model parameters
     """
     N, M = np.shape(G)
