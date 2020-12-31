@@ -4,7 +4,7 @@ import yfinance
 def download_stock_data(Stocks, start_date, end_date):
     """
     Wrapper function for yfinance.download()
-
+    
     Inputs
     ------
     Stocks: list
@@ -13,6 +13,7 @@ def download_stock_data(Stocks, start_date, end_date):
         start date to download
     end_date: datetime
         end date to download
+        
     Returns
     -------
     stocks: pd.DataFrame
