@@ -3,6 +3,7 @@ Python codes for data science.
 
 Directories
 -----------
+● covid19: analysis of covid19 cases.
 ● resale_flat_prices: analysis and modelling of Singapore resale flat prices.
 
 Files
