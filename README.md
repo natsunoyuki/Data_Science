@@ -1,5 +1,5 @@
 # Data-Science
-A set of python scripts for data science
+Python codes for data science.
 
 Directories
 -----------
