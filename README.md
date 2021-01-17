@@ -10,7 +10,8 @@ Directories
 Files
 -----
 ● auto_regression.py: scripts to create auto regression data.  
-● bayes_opt_hyperparams_search.ipynb: example showing how to use Bayesian Optimization to do a hyperparameter search.  
+● bayes_opt_hyperparams_search.ipynb: example showing how to use the bayes_opt library Bayesian Optimization to do a model hyperparameter search.  
 ● create_lstm_data.py: scripts to create data for LSTM neural network modelling.  
 ● download_stock_data.py: wrapper function to download stock data from Yahoo Finance using the yfinance library.  
 ● linear_inversion.py: codes to perform linear inversion/regression using several different methods.  
+● skopt_hyperparams_search.ipynb: example showing how to use the skopt library Bayesian Optimization to do a model hyperparameter search.  
