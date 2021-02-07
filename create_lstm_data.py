@@ -3,6 +3,7 @@ import numpy as np
 def create_lstm_data(data, lag = 1):
     """
     Creates features and targets suitable for LSTM modelling
+    See https://keras.io/api/layers/recurrent_layers/lstm/ for more information
     
     Inputs
     ------
@@ -29,23 +30,23 @@ def create_lstm_data(data, lag = 1):
         # this function works only for 1D arrays. Anything more than that will not work
         return None
         
-    # If there are no pressing issues, create the LSTM compatible data 
+    # if there are no pressing issues, create the LSTM compatible data 
     # with the specified historical lag
     X = np.zeros([len(data) - lag, lag])
     y = np.zeros(len(data) - lag)
     for n in range(len(data) - lag):
         X[n] = data[n:n + lag]
         y[n] = data[n + lag]
-    
-    X = X.reshape([X.shape[0], 1, X.shape[1]])
+        
+    # X needs to be a 3D tensor with shape: [batch, timesteps, feature]
+    X = X.reshape([X.shape[0], X.shape[1], 1])
     
     return X, y
 
-def demo():
+def demo(lag = 3):
     # demonstrates how to use create_lstm_data()
-    X = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-                  11, 12, 13, 14, 15, 16, 17 ,18 ,19, 20])
-    X, y = create_lstm_data(X, 3)
+    X = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 ,18 ,19, 20])
+    X, y = create_lstm_data(X, lag)
 
     for i in range(len(X)):
         print(X[i], y[i])
