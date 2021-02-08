@@ -12,6 +12,26 @@ import numpy as np
 # 4. L1 norm linear inversion/regression for the over determined problem
 # m = l1_norm_inversion(G, d, sd = 1.0)
 
+# Comments regarding the inversion kernel G:
+# The inversion kernel must be created properly for an accurate inversion result.
+# We demonstrate how the inversion kernel should look like using examples.
+# 1. Linear inversion of y = mx + c
+# where x = [0.1, 0.2, 0.3, 0.4, 0.5]:
+#     0.1 1
+#     0.2 1
+# G = 0.3 1
+#     0.4 1
+#     0.5 1
+# 2. Linear inversion of y = ax**2 + bx + c
+# where x = [0.1, 0.2, 0.3, 0.4, 0.5]:
+#     0.01 0.1 1
+#     0.04 0.2 1
+# G = 0.09 0.3 1
+#     0.16 0.4 1
+#     0.25 0.5 1
+# By convention, each row of G corresponds to one data point, and each column of G corresponds
+# to the coefficients of a particular model parameter, such as m and c in the 1st case.
+
 def least_squares(G, d):
     """
     Linear inversion using least squares to get the Penrose inverse
