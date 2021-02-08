@@ -4,15 +4,15 @@ import numpy as np
 
 # List of linear inversion solvers in this script:
 # 1. Linear least squares inversion/regression for the over determined problem
-# m = least_squares(d, G)
+# m = least_squares(G, d)
 # 2. Linear inversion/regression for the under determined problem
-# m = min_length(d, G)
+# m = min_length(G, d)
 # 3. Generalized SVD linear inversion/regression
-# m = SVD(d, G, l = 0.01)
+# m = SVD(G, d, l = 0.01)
 # 4. L1 norm linear inversion/regression for the over determined problem
-# m = l1_norm_inversion(d, G, sd = 1.0)
+# m = l1_norm_inversion(G, d, sd = 1.0)
 
-def least_squares(d, G):
+def least_squares(G, d):
     """
     Linear inversion using least squares to get the Penrose inverse
     for over determined problems.
@@ -23,10 +23,10 @@ def least_squares(d, G):
     
     Inputs
     ------
-    d: np.array
-        np.array of observations
     G: np.array
-        np.array of the inversion kernel
+        np.array of the inversion kernel. Equivalent to X in scikit-learn 
+    d: np.array
+        np.array of observations. Equivalent to y in scikit-learn
         
     Returns
     -------
@@ -37,7 +37,7 @@ def least_squares(d, G):
     m = np.dot(m, d)
     return m
 
-def min_length(d, G):
+def min_length(G, d):
     """
     Linear inversion using minimum length to get the Penrose inverse
     for under determined problems.
@@ -48,10 +48,10 @@ def min_length(d, G):
     
     Inputs
     ------
-    d: np.array
-        np.array of observations
     G: np.array
-        np.array of the inversion kernel
+        np.array of the inversion kernel. Equivalent to X in scikit-learn 
+    d: np.array
+        np.array of observations. Equivalent to y in scikit-learn
         
     Returns
     -------
@@ -62,7 +62,7 @@ def min_length(d, G):
     m = np.dot(m, d)
     return m
 
-def SVD(d, G, l = 0.01):
+def SVD(G, d, l = 0.01):
     """
     Linear inversion using SVD to get the Penrose inverse
     For a linear system given by: |d> = G |m>
@@ -74,10 +74,10 @@ def SVD(d, G, l = 0.01):
     
     Inputs
     ------
-    d: np.array
-        np.array of observations
     G: np.array
-        np.array of the inversion kernel
+        np.array of the inversion kernel. Equivalent to X in scikit-learn 
+    d: np.array
+        np.array of observations. Equivalent to y in scikit-learn
     l: float
         upper limit of the tolerance level of the SVD eigenvalues to treat as 0
         any eigenvalues smaller than l will be treated as 0
@@ -97,7 +97,7 @@ def SVD(d, G, l = 0.01):
     m = np.dot(Gg, d)
     return m
 
-def l1_norm_inversion(d, G, sd = 1.0):
+def l1_norm_inversion(G, d, sd = 1.0):
     """
     Linear inversion using L1 norm error instead of mean squared error for
     over determined problems.
@@ -108,10 +108,10 @@ def l1_norm_inversion(d, G, sd = 1.0):
     
     Inputs
     ------
-    d: np.array
-        np.array of observations
     G: np.array
-        np.array of the inversion kernel
+        np.array of the inversion kernel. Equivalent to X in scikit-learn 
+    d: np.array
+        np.array of observations. Equivalent to y in scikit-learn
     sd: float
         variance of the measurement d. Set to 1 by default
         
@@ -146,7 +146,7 @@ def l1_norm_inversion(d, G, sd = 1.0):
     b[:L] = np.zeros(L)
     
     A[L:L+2*M] = np.eye(2*M, L)
-    mls = least_squares(d, G)
+    mls = least_squares(G, d)
     mupperbound = 10 * np.max(np.abs(mls))
     b[L:L+2*M] = mupperbound
     
