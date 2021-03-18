@@ -9,6 +9,7 @@ Directories
 
 Files
 -----
+● Multi objective Bayesian optimization.ipynb: Jupyter notebook demonstrating how to use MOBOpt to perform multi objective Bayesian optimization.  
 ● auto_regression.py: scripts to create auto regression data.  
 ● bayes_opt_hyperparams_search.ipynb: example showing how to use the bayes_opt library Bayesian Optimization to do a model hyperparameter search.  
 ● create_lstm_data.py: scripts to create data for LSTM neural network modelling.  
