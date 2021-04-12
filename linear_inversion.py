@@ -32,6 +32,25 @@ from scipy.optimize import linprog
 # By convention, each row of G corresponds to one data point, and each column of G corresponds
 # to the coefficients of a particular model parameter, such as m and c in the 1st case.
 
+def make_G(x, N):
+    """
+    From the 1D x dimension array, create the inversion kernel G.
+    
+    Inputs
+    ------
+    x: np.array
+        1D np.array of values of the x dimension
+    N: int
+        order of the inversion kernel G. 
+        N = 2 for the linear kernel y = mx + c
+        
+    Returns
+    -------
+    G: np.array
+        inversion kernel
+    """
+    return np.vander(x, N)
+
 def least_squares(G, d):
     """
     Linear inversion using least squares to get the Penrose inverse.
