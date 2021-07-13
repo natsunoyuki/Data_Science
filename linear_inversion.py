@@ -136,7 +136,7 @@ def SVD(G, d, l = 0.01):
     m = np.dot(Gg, d)
     return m
 
-def l1_norm_inversion(G, d, sd = 1.0):
+def l1_norm_inversion(G, d, sd = None):
     """
     Linear inversion using L1 norm error instead of mean squared error for
     over determined problems.
@@ -151,7 +151,7 @@ def l1_norm_inversion(G, d, sd = 1.0):
         np.array of the inversion kernel. Equivalent to X in scikit-learn 
     d: np.array
         np.array of observations. Equivalent to y in scikit-learn
-    sd: float
+    sd: np.array
         variance of the measurement d. Set to 1 by default
         
     Returns
@@ -159,6 +159,11 @@ def l1_norm_inversion(G, d, sd = 1.0):
     mest_l1: np.array
         np.array of the inverted model parameters
     """
+    # If the variance of the measurement d was not provided,
+    # set it to 1.
+    if sd is None:
+        sd = np.ones(len(d))
+    
     N, M = np.shape(G)
     L = 2 * M + 3 * N
     f = np.zeros(L)
@@ -194,7 +199,7 @@ def l1_norm_inversion(G, d, sd = 1.0):
     mest_l1 = res['x'][:M] - res['x'][M:2*M]
     return mest_l1
 
-def linf_norm_inversion(G, d, sd = 1.0):
+def linf_norm_inversion(G, d, sd = None):
     """
     Linear inversion using L-inf norm error instead of mean squared error for
     over determined problems.
@@ -209,7 +214,7 @@ def linf_norm_inversion(G, d, sd = 1.0):
         np.array of the inversion kernel. Equivalent to X in scikit-learn 
     d: np.array
         np.array of observations. Equivalent to y in scikit-learn
-    sd: float
+    sd: np.array
         variance of the measurement d. Set to 1 by default
         
     Returns
@@ -217,6 +222,11 @@ def linf_norm_inversion(G, d, sd = 1.0):
     mest_linf: np.array
         np.array of the inverted model parameters
     """
+    # If the variance of the measurement d was not provided,
+    # set it to 1.
+    if sd is None:
+        sd = np.ones(len(d))    
+    
     N, M = np.shape(G)
     L = 2 * M + 1 + 2 * N
     f = np.zeros(L)
