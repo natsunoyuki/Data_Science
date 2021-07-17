@@ -152,23 +152,26 @@ def l1_norm_inversion(G, d, sd = None):
     d: np.array
         np.array of observations. Equivalent to y in scikit-learn
     sd: np.array
-        variance of the measurement d. Set to 1 by default
+        std of the measurement d. Set to 1 by default
         
     Returns
     -------
     mest_l1: np.array
         np.array of the inverted model parameters
     """
-    # If the variance of the measurement d was not provided,
+    # If the std of the measurement d was not provided,
     # set it to 1.
     if sd is None:
         sd = np.ones(len(d))
     
     N, M = np.shape(G)
     L = 2 * M + 3 * N
+
+    # 1. Create f containing the inverse data std:
     f = np.zeros(L)
     f[2*M:2*M+N] = 1 / sd
 
+    # Make Aeq and beq for the equality constraints:
     Aeq = np.zeros([2*N, L])
     beq = np.zeros(2*N)
     
@@ -184,18 +187,23 @@ def l1_norm_inversion(G, d, sd = None):
     Aeq[N:2*N, 2*M+2*N:2*M+3*N] = -np.eye(N)
     beq[N:2*N] = d
     
+    # Make A and b for the >=0 constraints:
     A = np.zeros([L+2*M, L])
     b = np.zeros(L+2*M)
     A[:L, :] = -np.eye(L)
     b[:L] = np.zeros(L)
     
     A[L:L+2*M] = np.eye(2*M, L)
+    # For this example, we use the least squares solution
+    # as the upper bound for the model parameters.
     mls = least_squares(G, d)
     mupperbound = 10 * np.max(np.abs(mls))
     b[L:L+2*M] = mupperbound
     
     res = linprog(f, A, b, Aeq, beq)
     
+    # The output res = [m1, m2, alpha, x1, x2]. Extract m1 and m2 
+    # and calculate the model parameters using m = m1 - m2.
     mest_l1 = res['x'][:M] - res['x'][M:2*M]
     return mest_l1
 
